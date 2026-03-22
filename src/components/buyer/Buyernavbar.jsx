@@ -1,75 +1,143 @@
-import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 export const BuyerNavbar = () => {
+
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
+
   return (
     <>
-      <nav style={styles.navbar}>
-        <h2 style={styles.logo}>Car Scout</h2>
+      {/* NAVBAR */}
+      <nav className="bg-white shadow-md px-6 py-3 sticky top-0 z-50">
+        <div className="flex justify-between items-center">
 
-        <div style={styles.links}>
-          <NavLink to="/user/carlist" style={styles.link}>
-            Browse Cars
-          </NavLink>
+          {/* LOGO */}
+          <h1 className="text-2xl font-bold text-blue-600">
+            Car Scout 🚗
+          </h1>
 
-          <NavLink to="/user/compare" style={styles.link}>
-            Compare Cars
-          </NavLink>
+          {/* DESKTOP MENU */}
+          <ul className="hidden md:flex gap-6 items-center font-medium">
 
-          <NavLink to="/user/saved" style={styles.link}>
-            Saved Cars
-          </NavLink>
+            <li>
+              <Link to="/buyer/dashboard">Dashboard</Link>
+            </li>
 
-          <NavLink to="/user/testdrives" style={styles.link}>
-            Test Drives
-          </NavLink>
+            <li>
+              <Link to="/buyer/browsecars">Browse Cars</Link> {/* ✅ FIXED */}
+            </li>
 
-          <NavLink to="/user/financing" style={styles.link}>
-            Financing
-          </NavLink>
+            <li>
+              <Link to="/buyer/saved-cars" className="hover:text-blue-500">
+                Saved Cars
+              </Link>
+            </li>
 
-          <NavLink to="/user/messages" style={styles.link}>
-            Messages
-          </NavLink>
+            <li>
+              <Link to="/buyer/negotiations" className="hover:text-blue-500">
+                Negotiations
+              </Link>
+            </li>
 
-          <NavLink to="/" style={styles.logout}>
-            Logout
-          </NavLink>
+            <li>
+              <Link to="/buyer/testdrive">Test Drives</Link> {/* ✅ FIXED */}
+            </li>
+
+            <li>
+              <Link to="/buyer/transactions" className="hover:text-blue-500">
+                Transactions
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/buyer/getapidemo" className="hover:text-blue-500">
+                GETAPIDEMO
+              </Link>
+            </li>
+
+            <li>
+              <Link to="/buyer/profile" className="hover:text-blue-500">
+                Profile
+              </Link>
+            </li>
+
+            <li>
+              <button
+                onClick={handleLogout}
+                className="bg-blue-500 text-white px-4 py-1 rounded-lg hover:bg-blue-600"
+              >
+                Logout
+              </button>
+            </li>
+
+          </ul>
+
+          {/* HAMBURGER */}
+          <button
+            className="md:hidden text-2xl"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            ☰
+          </button>
+
         </div>
+
+        {/* MOBILE MENU */}
+        {isOpen && (
+          <ul className="md:hidden flex flex-col mt-4 gap-3 font-medium">
+
+            <li>
+              <Link to="/buyer/dashboard">Dashboard</Link>
+            </li>
+
+            <li>
+              <Link to="/buyer/browse-cars">Browse Cars</Link>
+            </li>
+
+            <li>
+              <Link to="/buyer/saved-cars">Saved Cars</Link>
+            </li>
+
+            <li>
+              <Link to="/buyer/negotiations">Negotiations</Link>
+            </li>
+
+            <li>
+              <Link to="/buyer/test-drives">Test Drives</Link>
+            </li>
+
+            <li>
+              <Link to="/buyer/transactions">Transactions</Link>
+            </li>
+
+            <li>
+              <Link to="/buyer/profile">Profile</Link>
+            </li>
+
+            <li>
+              <button
+                onClick={handleLogout}
+                className="bg-blue-500 text-white px-4 py-1 rounded-lg w-fit"
+              >
+                Logout
+              </button>
+            </li>
+
+          </ul>
+        )}
       </nav>
 
-      {/* Child Routes Render Here */}
-      <div style={{ padding: "20px" }}>
+      {/* PAGE CONTENT */}
+      <div className="p-6 bg-gray-100 min-h-[calc(100vh-64px)]">
         <Outlet />
       </div>
     </>
   );
-};
-
-const styles = {
-  navbar: {
-    backgroundColor: "#111",
-    color: "white",
-    padding: "15px 30px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center"
-  },
-  logo: {
-    margin: 0
-  },
-  links: {
-    display: "flex",
-    gap: "20px"
-  },
-  link: {
-    color: "white",
-    textDecoration: "none",
-    fontWeight: "500"
-  },
-  logout: {
-    color: "red",
-    textDecoration: "none",
-    fontWeight: "bold"
-  }
 };

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Signup = () => {
+
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
     password: "",
   });
@@ -17,20 +18,38 @@ const Signup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // ✅ Correct validation
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
+    if (!formData.fullName || !formData.email || !formData.password) {
       setError("All fields are required!");
       return;
     }
 
-    // Save locally (temporary)
-    localStorage.setItem("carScoutUser", JSON.stringify(formData));
+    try {
 
-    alert("Signup Successful 🚗");
-    navigate("/");
+      // ✅ Send correct data
+      const response = await axios.post(
+        "http://localhost:5000/user/register",
+        formData
+      );
+
+      console.log(response.data);
+
+      alert(response.data.message);
+
+      navigate("/login");
+
+    } catch (err) {
+
+      if (err.response) {
+        setError(err.response.data.message);
+      } else {
+        setError("Server Error");
+      }
+
+    }
   };
 
   return (
@@ -60,16 +79,8 @@ const Signup = () => {
 
             <input
               type="text"
-              name="firstName"
-              placeholder="First Name"
-              className="w-full px-4 py-2 border rounded-lg"
-              onChange={handleChange}
-            />
-
-            <input
-              type="text"
-              name="lastName"
-              placeholder="Last Name"
+              name="fullName"
+              placeholder="Full Name"
               className="w-full px-4 py-2 border rounded-lg"
               onChange={handleChange}
             />

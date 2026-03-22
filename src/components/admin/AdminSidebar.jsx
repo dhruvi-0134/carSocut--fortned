@@ -1,57 +1,141 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 export const AdminSidebar = () => {
+
+  const [isOpen, setIsOpen] = useState(true);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
+
   return (
-    <div style={styles.sidebar}>
-      <h2 style={styles.logo}>Car Scout Admin</h2>
+    <div className="flex min-h-screen">
 
-      <NavLink to="/admin/dashboard" style={styles.link}>Dashboard</NavLink>
+      {/* SIDEBAR */}
+      <div
+        className={`bg-gray-900 text-white p-5 transition-all duration-300 
+        ${isOpen ? "w-64" : "w-20"}`}
+      >
 
-      <p style={styles.section}>User Management</p>
-      <NavLink to="/admin/buyers" style={styles.link}>Manage Buyers</NavLink>
-      <NavLink to="/admin/sellers" style={styles.link}>Manage Sellers</NavLink>
+        {/* TOGGLE BUTTON */}
+        <button
+          className="mb-6 text-white text-xl"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          ☰
+        </button>
 
-      <p style={styles.section}>Car Listings</p>
-      <NavLink to="/admin/cars" style={styles.link}>Manage Cars</NavLink>
-      <NavLink to="/admin/approve-cars" style={styles.link}>Approve Listings</NavLink>
+        {/* LOGO */}
+        {isOpen && (
+          <h2 className="text-2xl font-bold mb-8 text-blue-400">
+            Car Scout 🚗
+          </h2>
+        )}
 
-      <p style={styles.section}>Inspection</p>
-      <NavLink to="/admin/reports" style={styles.link}>Inspection Reports</NavLink>
+        <ul className="space-y-4 font-medium">
 
-      <p style={styles.section}>Transactions</p>
-      <NavLink to="/admin/payments" style={styles.link}>Payments</NavLink>
-      <NavLink to="/admin/disputes" style={styles.link}>Disputes</NavLink>
+          <li>
+            <Link
+              to="/admin/dashboard"
+              className="block hover:text-blue-400"
+            >
+              📊 {isOpen && "Dashboard"}
+            </Link>
+          </li>
 
-      <p style={styles.section}>Analytics</p>
-      <NavLink to="/admin/analytics" style={styles.link}>Reports</NavLink>
+          <li>
+            <Link
+              to="/admin/manage-users"
+              className="block hover:text-blue-400"
+            >
+              👤 {isOpen && "Manage Users"}
+            </Link>
+          </li>
 
-      <NavLink to="/admin/settings" style={styles.link}>Settings</NavLink>
+          <li>
+            <Link
+              to="/admin/manage-sellers"
+              className="block hover:text-blue-400"
+            >
+              🏢 {isOpen && "Manage Sellers"}
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/admin/manage-listings"
+              className="block hover:text-blue-400"
+            >
+              🚗 {isOpen && "Car Listings"}
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/admin/inspections"
+              className="block hover:text-blue-400"
+            >
+              📝 {isOpen && "Inspection Reports"}
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/admin/negotiations"
+              className="block hover:text-blue-400"
+            >
+              🤝 {isOpen && "Negotiations"}
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/admin/transactions"
+              className="block hover:text-blue-400"
+            >
+              💳 {isOpen && "Transactions"}
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/admin/reports"
+              className="block hover:text-blue-400"
+            >
+              📈 {isOpen && "Reports"}
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/admin/settings"
+              className="block hover:text-blue-400"
+            >
+              ⚙️ {isOpen && "Settings"}
+            </Link>
+          </li>
+
+          <li>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 px-3 py-1 rounded hover:bg-red-600 w-full text-left"
+            >
+              🚪 {isOpen && "Logout"}
+            </button>
+          </li>
+
+        </ul>
+      </div>
+
+      {/* MAIN CONTENT */}
+      <div className="flex-1 p-6 bg-gray-100">
+        <Outlet />
+      </div>
+
     </div>
   );
-};
-
-const styles = {
-  sidebar: {
-    width: "250px",
-    height: "100vh",
-    background: "#111",
-    color: "white",
-    padding: "20px",
-    display: "flex",
-    flexDirection: "column"
-  },
-  logo: {
-    marginBottom: "20px"
-  },
-  link: {
-    color: "white",
-    textDecoration: "none",
-    padding: "8px 0"
-  },
-  section: {
-    marginTop: "15px",
-    fontWeight: "bold",
-    color: "#aaa"
-  }
 };

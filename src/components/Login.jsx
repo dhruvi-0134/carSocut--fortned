@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
@@ -13,32 +14,43 @@ const Login = () => {
     formState: { errors }
   } = useForm();
 
-  const submitHandler = (data) => {
+  const submitHandler = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:5000/user/login", data);
 
-    // get saved user from localStorage
-    const savedUser = JSON.parse(localStorage.getItem("carScoutUser"));
+      if (res.status === 200) {
+        const token = res.data.token;
+        const role = res.data.role;
+        const user = res.data.data; // ✅ important
 
-    // check if user exists
-    if (!savedUser) {
-      toast.error("No user found. Please signup first.");
-      return;
-    }
+        // ✅ STORE ALL
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", role);
+        localStorage.setItem("user", JSON.stringify(user));
 
-    // check email and password
-    if (data.email === savedUser.email && data.password === savedUser.password) {
-      toast.success("Login Successful 🚗");
-      navigate("/buyernavbar");
-    } else {
-      toast.error("Invalid Email or Password ❌");
+        toast.success("Login Success");
+
+        // ✅ NAVIGATION INSIDE
+        if (role === "buyer") {
+          navigate("/buyer/dashboard");
+        } else if (role === "admin") {
+          navigate("/admin/dashboard");
+        } else if (role === "seller") {
+          navigate("/seller/dashboard");
+        } else {
+          toast.error("Invalid Role");
+        }
+      }
+
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Login Failed");
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
 
       <div className="bg-white shadow-2xl rounded-2xl overflow-hidden flex w-[900px]">
 
-        {/* LEFT IMAGE */}
         <div className="w-1/2 hidden md:block">
           <img
             src="https://images.unsplash.com/photo-1503376780353-7e6692767b70"
@@ -47,7 +59,6 @@ const Login = () => {
           />
         </div>
 
-        {/* RIGHT LOGIN FORM */}
         <div className="w-full md:w-1/2 p-10">
 
           <h2 className="text-3xl font-bold text-gray-800 mb-2">
@@ -60,7 +71,6 @@ const Login = () => {
 
           <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
 
-            {/* EMAIL */}
             <div>
               <label className="block text-gray-700 mb-2">Email</label>
 
@@ -76,7 +86,6 @@ const Login = () => {
               )}
             </div>
 
-            {/* PASSWORD */}
             <div>
               <label className="block text-gray-700 mb-2">Password</label>
 
@@ -98,7 +107,6 @@ const Login = () => {
               )}
             </div>
 
-            {/* LOGIN BUTTON */}
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
@@ -108,7 +116,6 @@ const Login = () => {
 
           </form>
 
-          {/* SIGNUP LINK */}
           <p className="text-sm text-center mt-6">
             Don’t have an account?{" "}
             <Link to="/signup" className="text-blue-600 hover:underline">
