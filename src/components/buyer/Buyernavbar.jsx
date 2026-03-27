@@ -9,6 +9,7 @@ export const BuyerNavbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
@@ -31,7 +32,7 @@ export const BuyerNavbar = () => {
             </li>
 
             <li>
-              <Link to="/buyer/browsecars">Browse Cars</Link> {/* ✅ FIXED */}
+              <Link to="/buyer/browsecars">Browse Cars</Link>
             </li>
 
             <li>
@@ -46,19 +47,12 @@ export const BuyerNavbar = () => {
               </Link>
             </li>
 
-            <li>
-              <Link to="/buyer/testdrive">Test Drives</Link> {/* ✅ FIXED */}
-            </li>
+            {/* ❌ Removed wrong testdrive link */}
+            {/* क्योंकि :id required है */}
 
             <li>
               <Link to="/buyer/transactions" className="hover:text-blue-500">
                 Transactions
-              </Link>
-            </li>
-
-            <li>
-              <Link to="/buyer/getapidemo" className="hover:text-blue-500">
-                GETAPIDEMO
               </Link>
             </li>
 
@@ -97,8 +91,9 @@ export const BuyerNavbar = () => {
               <Link to="/buyer/dashboard">Dashboard</Link>
             </li>
 
+            {/* ✅ FIXED */}
             <li>
-              <Link to="/buyer/browse-cars">Browse Cars</Link>
+              <Link to="/buyer/browsecars">Browse Cars</Link>
             </li>
 
             <li>
@@ -109,9 +104,7 @@ export const BuyerNavbar = () => {
               <Link to="/buyer/negotiations">Negotiations</Link>
             </li>
 
-            <li>
-              <Link to="/buyer/test-drives">Test Drives</Link>
-            </li>
+            {/* ❌ removed invalid testdrive link */}
 
             <li>
               <Link to="/buyer/transactions">Transactions</Link>
@@ -119,15 +112,6 @@ export const BuyerNavbar = () => {
 
             <li>
               <Link to="/buyer/profile">Profile</Link>
-            </li>
-
-            <li>
-              <button
-                onClick={handleLogout}
-                className="bg-blue-500 text-white px-4 py-1 rounded-lg w-fit"
-              >
-                Logout
-              </button>
             </li>
 
           </ul>

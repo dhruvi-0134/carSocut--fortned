@@ -1,19 +1,26 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-export const ProtectedRoute = ({ children, role }) => {
+export const ProtectedRoute = ({ role }) => {
     const token = localStorage.getItem("token");
     const userRole = localStorage.getItem("role");
+    const location = useLocation();
 
-    // ❌ no token → go login
-    if (!token) {
-        return <Navigate to="/login" />;
+    // ❌ NO TOKEN OR INVALID TOKEN
+    if (!token || token === "undefined" || token === "null") {
+        localStorage.clear(); // 🔥 IMPORTANT
+        return (
+            <Navigate
+                to="/login"
+                state={{ redirectTo: location.pathname }}
+                replace
+            />
+        );
     }
 
-    // ❌ role mismatch → go login
-    if (role && userRole?.toLowerCase() !== role.toLowerCase()) {
-        return <Navigate to="/login" />;
+    // ❌ ROLE MISMATCH
+    if (role && role !== userRole) {
+        return <Navigate to="/" replace />;
     }
 
-    // ✅ allow access
-    return children;
+    return <Outlet />;
 };

@@ -8,47 +8,79 @@ export const SellerNavbar = () => {
                 <h2 style={styles.logo}>Car Scout</h2>
 
                 <div style={styles.links}>
-                    <NavLink to="/seller/dashboard" style={styles.link}>
+
+                    <NavLink
+                        to="/seller/dashboard"
+                        style={({ isActive }) => ({
+                            ...styles.link,
+                            color: isActive ? "#00ffcc" : "white"
+                        })}
+                    >
                         Dashboard
                     </NavLink>
 
-                    <NavLink to="/seller/addcar" style={styles.link}>
+                    <NavLink
+                        to="/seller/addcar"
+                        style={({ isActive }) => ({
+                            ...styles.link,
+                            color: isActive ? "#00ffcc" : "white"
+                        })}
+                    >
                         Add Car
                     </NavLink>
 
-                    <NavLink to="/seller/mycars" style={styles.link}>
+                    <NavLink
+                        to="/seller/mycars"
+                        style={({ isActive }) => ({
+                            ...styles.link,
+                            color: isActive ? "#00ffcc" : "white"
+                        })}
+                    >
                         My Cars
                     </NavLink>
 
-                    <NavLink to="/seller/testdrives" style={styles.link}>
+                    <NavLink to="/seller/testdrives" style={({ isActive }) => ({
+                        ...styles.link,
+                        color: isActive ? "#00ffcc" : "white"
+                    })}>
                         Test Drives
                     </NavLink>
 
-                    <NavLink to="/seller/offers" style={styles.link}>
+                    <NavLink to="/seller/offers" style={({ isActive }) => ({
+                        ...styles.link,
+                        color: isActive ? "#00ffcc" : "white"
+                    })}>
                         Offers
                     </NavLink>
 
-                    <NavLink to="/seller/messages" style={styles.link}>
+                    <NavLink to="/seller/messages" style={({ isActive }) => ({
+                        ...styles.link,
+                        color: isActive ? "#00ffcc" : "white"
+                    })}>
                         Messages
                     </NavLink>
 
-                    <NavLink to="/seller/profile" style={styles.link}>
+                    <NavLink to="/seller/profile" style={({ isActive }) => ({
+                        ...styles.link,
+                        color: isActive ? "#00ffcc" : "white"
+                    })}>
                         Profile
                     </NavLink>
 
                     <NavLink to="/" style={styles.logout}>
                         Logout
                     </NavLink>
+
                 </div>
             </nav>
 
-            {/* Child Routes Render Here */}
             <div style={{ padding: "20px" }}>
                 <Outlet />
             </div>
         </>
     );
 };
+export default SellerNavbar;
 
 const styles = {
     navbar: {
@@ -67,7 +99,6 @@ const styles = {
         gap: "20px"
     },
     link: {
-        color: "white",
         textDecoration: "none",
         fontWeight: "500"
     },

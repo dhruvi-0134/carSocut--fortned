@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import API from "../../api/axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { Navigate } from "react-router-dom";
 export default function TestDrive() {
     const { id } = useParams(); // ✅ carId
     const navigate = useNavigate();
@@ -26,6 +26,11 @@ export default function TestDrive() {
     useEffect(() => {
         if (id) fetchCar(); // ✅ prevent undefined
     }, [id]);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        return <Navigate to="/login" replace />;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,7 +48,7 @@ export default function TestDrive() {
         try {
             const testDriveDate = new Date(`${date}T${time}`);
 
-            await API.post("/testdrive/add", {
+            await API.post("/testdrives/add", {
                 buyerId: user?._id,
                 sellerId: car?.sellerId?._id || car?.sellerId,
                 carId: car?._id,

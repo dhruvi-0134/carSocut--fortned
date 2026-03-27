@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import API from "../../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
@@ -15,13 +15,22 @@ export default function BrowseCars() {
     const [priceFilter, setPriceFilter] = useState("");
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const brands = [...new Set(cars.map(car => car.brand))];
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?._id;
 
-    const userId = localStorage.getItem("userId");
-    const storageKey = `wishlist_${userId}`;
-
+    const storageKey = userId ? `wishlist_${userId}` : "wishlist_guest";
     const [wishlist, setWishlist] = useState(
         JSON.parse(localStorage.getItem(storageKey)) || []
     );
+
+    // ✅ GET SEARCH FROM URL (Home → BrowseCars)
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const searchQuery = params.get("search") || "";
+        setSearch(searchQuery);
+    }, [location.search]);
 
     // 📡 Fetch cars
     useEffect(() => {
@@ -42,7 +51,6 @@ export default function BrowseCars() {
     useEffect(() => {
         let data = [...cars];
 
-        // Search filter
         if (search) {
             data = data.filter(car =>
                 `${car.brand} ${car.model}`
@@ -51,17 +59,15 @@ export default function BrowseCars() {
             );
         }
 
-        // Brand filter
         if (brandFilter) {
-            data = data.filter(car => car.brand === brandFilter);
+            data = data.filter(
+                car => car.brand.toLowerCase() === brandFilter.toLowerCase()
+            );
         }
-
-        // Fuel filter
         if (fuelFilter) {
             data = data.filter(car => car.fuelType === fuelFilter);
         }
 
-        // Price filter
         if (priceFilter) {
             if (priceFilter === "low") {
                 data = data.filter(car => car.price < 500000);
@@ -75,22 +81,23 @@ export default function BrowseCars() {
         setFilteredCars(data);
     }, [search, brandFilter, fuelFilter, priceFilter, cars]);
 
-    // ❤️ Toggle Wishlist
+    // ❤️ Wishlist
     const toggleWishlist = (car) => {
-        let updated;
+        let updated = [];
 
-        const exists = wishlist.find(item => item._id === car._id);
+        const saved = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+        const exists = saved.find(item => item._id === car._id);
 
         if (exists) {
-            updated = wishlist.filter(item => item._id !== car._id);
+            updated = saved.filter(item => item._id !== car._id);
         } else {
-            updated = [...wishlist, car];
+            updated = [...saved, car];
         }
 
-        setWishlist(updated);
         localStorage.setItem(storageKey, JSON.stringify(updated));
+        setWishlist(updated);
     };
-
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
 
@@ -107,33 +114,24 @@ export default function BrowseCars() {
                     className="flex-1 border p-2 rounded"
                 />
 
-                {/* Brand */}
-                <select
-                    onChange={(e) => setBrandFilter(e.target.value)}
-                    className="border p-2 rounded"
-                >
+                <select onChange={(e) => setBrandFilter(e.target.value)} className="border p-2 rounded">
                     <option value="">All Brands</option>
                     <option value="Toyota">Toyota</option>
                     <option value="Hyundai">Hyundai</option>
                     <option value="Tata">Tata</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Mahindra">Mahindra</option>
+                    <option value="Maruti Suzuki">Maruti Suzuki</option>
                 </select>
 
-                {/* Fuel */}
-                <select
-                    onChange={(e) => setFuelFilter(e.target.value)}
-                    className="border p-2 rounded"
-                >
+                <select onChange={(e) => setFuelFilter(e.target.value)} className="border p-2 rounded">
                     <option value="">Fuel</option>
                     <option value="Petrol">Petrol</option>
                     <option value="Diesel">Diesel</option>
                     <option value="Electric">Electric</option>
                 </select>
 
-                {/* Price */}
-                <select
-                    onChange={(e) => setPriceFilter(e.target.value)}
-                    className="border p-2 rounded"
-                >
+                <select onChange={(e) => setPriceFilter(e.target.value)} className="border p-2 rounded">
                     <option value="">Price</option>
                     <option value="low">Below 5L</option>
                     <option value="mid">5L - 10L</option>
@@ -152,12 +150,8 @@ export default function BrowseCars() {
                     );
 
                     return (
-                        <div
-                            key={car._id}
-                            className="bg-white rounded-xl shadow p-4 hover:shadow-lg transition"
-                        >
+                        <div key={car._id} className="bg-white rounded-xl shadow p-4 hover:shadow-lg transition">
 
-                            {/* IMAGE */}
                             <img
                                 src={
                                     car.media?.[0]?.mediaUrl ||
@@ -166,22 +160,16 @@ export default function BrowseCars() {
                                 className="w-full h-48 object-cover rounded"
                             />
 
-                            {/* TITLE + HEART */}
                             <h2 className="text-lg font-semibold mt-3 flex justify-between items-center">
-
                                 {car.brand} {car.model}
 
-                                <span
-                                    onClick={() => toggleWishlist(car)}
-                                    className="cursor-pointer text-xl"
-                                >
+                                <span onClick={() => toggleWishlist(car)} className="cursor-pointer text-xl">
                                     {isSaved ? (
                                         <FaHeart className="text-red-500" />
                                     ) : (
                                         <FaRegHeart className="text-gray-400" />
                                     )}
                                 </span>
-
                             </h2>
 
                             <p className="text-green-600 font-bold">
@@ -192,10 +180,20 @@ export default function BrowseCars() {
                                 {car.fuelType} | {car.transmission}
                             </p>
 
+                            {/* ✅ FIXED LOGIN CHECK */}
                             <button
-                                onClick={() =>
-                                    navigate(`/buyer/car/${car._id}`)
-                                }
+                                onClick={() => {
+                                    const token = localStorage.getItem("token");
+
+                                    if (!token) {
+                                        navigate("/login", {
+                                            state: { redirectTo: `/buyer/car/${car._id}` }
+                                        });
+                                        return;
+                                    }
+
+                                    navigate(`/buyer/car/${car._id}`);
+                                }}
                                 className="mt-3 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
                             >
                                 View Details

@@ -65,14 +65,7 @@ export const AdminSidebar = () => {
             </Link>
           </li>
 
-          <li>
-            <Link
-              to="/admin/manage-listings"
-              className="block hover:text-blue-400"
-            >
-              🚗 {isOpen && "Car Listings"}
-            </Link>
-          </li>
+
 
           <li>
             <Link
@@ -83,14 +76,6 @@ export const AdminSidebar = () => {
             </Link>
           </li>
 
-          <li>
-            <Link
-              to="/admin/negotiations"
-              className="block hover:text-blue-400"
-            >
-              🤝 {isOpen && "Negotiations"}
-            </Link>
-          </li>
 
           <li>
             <Link
@@ -101,14 +86,6 @@ export const AdminSidebar = () => {
             </Link>
           </li>
 
-          <li>
-            <Link
-              to="/admin/reports"
-              className="block hover:text-blue-400"
-            >
-              📈 {isOpen && "Reports"}
-            </Link>
-          </li>
 
           <li>
             <Link
