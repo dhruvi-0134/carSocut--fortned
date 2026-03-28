@@ -1,224 +1,233 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+
+// 🔥 MAIN LOGO
 import logo from "../assets/image/logo.png";
 
+// 🔥 BRAND LOGOS (LOCAL)
+import tata from "../assets/brand/tatalogo.jpg";
+import bmw from "../assets/brand/bmwlogo.jpg";
+import mahindra from "../assets/brand/mahindralogo.jpg";
+import suzuki from "../assets/brand/marutilogo.jpg";
+
 export const Home = () => {
-
     const navigate = useNavigate();
+
     const [search, setSearch] = useState("");
-
-    // HERO IMAGES
-    const carImages = [
-        "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
-        "https://images.unsplash.com/photo-1555215695-3004980ad54e",
-        "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6",
-        "https://images.unsplash.com/photo-1619767886558-efdc259cde1a"
-    ];
-
     const [currentImage, setCurrentImage] = useState(0);
 
+    // 🔥 HERO IMAGES
+    const images = [
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+        "https://images.unsplash.com/photo-1555215695-3004980ad54e",
+        "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6"
+    ];
+
+    // 🔥 AUTO SLIDER
     useEffect(() => {
         const interval = setInterval(() => {
-            setCurrentImage((prev) => (prev + 1) % carImages.length);
+            setCurrentImage((prev) => (prev + 1) % images.length);
         }, 4000);
-
         return () => clearInterval(interval);
     }, []);
 
+    // 🔥 SEARCH → LOGIN
     const handleSearch = () => {
         if (!search.trim()) return;
-        navigate(`/browsecars?search=${search}`);
+
+        navigate("/login", {
+            state: {
+                redirectTo: `/buyer/browsecars?search=${search}`
+            }
+        });
     };
 
-    // BRAND DATA
+    // 🔥 TRENDING CARS
+    const cars = [
+        { name: "BMW X5", img: images[1] },
+        { name: "Audi R8", img: images[2] },
+        { name: "Tata Nexon", img: images[0] },
+        { name: "Mahindra Thar", img: images[1] }
+    ];
+
+    // 🔥 BRAND LOGOS
     const brands = [
-        { name: "Tata", img: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a" },
-        { name: "BMW", img: "https://images.unsplash.com/photo-1555215695-3004980ad54e" },
-        { name: "Mahindra", img: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6" },
-        { name: "Maruti Suzuki", img: "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2" }
+        { name: "Tata", img: tata },
+        { name: "BMW", img: bmw },
+        { name: "Mahindra", img: mahindra },
+        { name: "Suzuki", img: suzuki }
     ];
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="bg-gray-100">
 
-            {/* 🔥 HEADER */}
-            <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-md flex justify-between items-center px-10 py-4">
+            {/* 🔥 NAVBAR */}
+            <div className="fixed w-full z-50 bg-white/70 backdrop-blur-lg px-10 py-4 flex justify-between items-center shadow">
 
                 <img
                     src={logo}
                     alt="logo"
+                    className="h-14 cursor-pointer"
                     onClick={() => navigate("/")}
-                    className="h-12 cursor-pointer object-contain"
-                    onError={(e) => {
-                        e.target.src = "https://cdn-icons-png.flaticon.com/512/743/743922.png";
-                    }}
                 />
 
                 <div className="flex gap-4">
                     <button
                         onClick={() => navigate("/login")}
-                        className="px-4 py-1 border border-blue-300 text-blue-500 rounded-lg hover:bg-blue-50"
+                        className="px-5 py-2 border border-blue-500 text-blue-500 rounded-full hover:bg-blue-50 transition"
                     >
                         Login
                     </button>
 
                     <button
                         onClick={() => navigate("/signup")}
-                        className="px-4 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                        className="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
                     >
                         Sign Up
                     </button>
                 </div>
             </div>
 
-            {/* 🔥 HERO */}
-            <div className="relative h-[70vh] mt-20">
+            {/* 🔥 HERO SECTION */}
+            <div className="h-screen relative overflow-hidden">
 
-                <img
-                    src={carImages[currentImage]}
-                    className="w-full h-full object-cover"
-                />
+                {/* IMAGE SLIDER */}
+                {images.map((img, i) => (
+                    <motion.img
+                        key={i}
+                        src={img}
+                        className="absolute w-full h-full object-cover"
+                        animate={{ opacity: currentImage === i ? 1 : 0 }}
+                        transition={{ duration: 1 }}
+                    />
+                ))}
 
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <h1 className="text-5xl font-bold text-white text-center">
-                        Discover Premium Cars 🚗
+                {/* DARK OVERLAY */}
+                <div className="absolute inset-0 bg-black/60"></div>
+
+                {/* HERO TEXT */}
+                <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center px-4">
+                    <h1 className="text-5xl md:text-6xl font-bold mb-4">
+                        Find Your Perfect Ride
                     </h1>
+
+                    <p className="text-lg mb-6 opacity-80">
+                        Luxury • Performance • Reliability
+                    </p>
+
+                    <button
+                        onClick={() => navigate("/login")}
+                        className="bg-blue-600 px-8 py-3 rounded-full hover:bg-blue-700 transition"
+                    >
+                        Explore Cars
+                    </button>
                 </div>
 
-            </div>
-
-            {/* 🔍 SEARCH */}
-            <div className="bg-white shadow-lg p-6 mt-6 mx-auto max-w-4xl rounded-xl">
-
-                <div className="flex gap-3">
+                {/* 🔍 SEARCH BAR */}
+                <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-[90%] md:w-[60%] bg-white p-4 rounded-2xl shadow-xl flex gap-3">
                     <input
                         type="text"
                         placeholder="Search cars..."
-                        className="flex-1 p-3 border rounded-lg"
+                        className="flex-1 p-3 border rounded-lg outline-none"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
 
                     <button
                         onClick={handleSearch}
-                        className="bg-blue-600 text-white px-6 rounded-lg"
+                        className="bg-blue-600 text-white px-6 rounded-lg hover:bg-blue-700"
                     >
                         Search
                     </button>
                 </div>
-
             </div>
 
-            {/* 🚗 POPULAR CARS */}
-            <div className="py-12 px-10">
-
-                <h2 className="text-3xl font-bold text-center mb-8">
-                    Popular Cars
+            {/* 🚗 TRENDING CARS */}
+            <div className="py-20 px-6 md:px-10">
+                <h2 className="text-4xl font-bold mb-10 text-center">
+                    Trending Cars
                 </h2>
 
-                <div className="grid md:grid-cols-4 gap-6">
+                <div className="flex gap-6 overflow-x-auto">
 
-                    {[
-                        "https://images.unsplash.com/photo-1555215695-3004980ad54e",
-                        "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6",
-                        "https://images.unsplash.com/photo-1619767886558-efdc259cde1a",
-                        "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2",
-                        "https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
-                        "https://images.unsplash.com/photo-1549924231-f129b911e442",
-                        "https://images.unsplash.com/photo-1511919884226-fd3cad34687c"
-                    ].map((img, index) => (
-                        <div
-                            key={index}
-                            className="bg-white rounded-xl shadow hover:shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition"
+                    {cars.map((car, i) => (
+                        <motion.div
+                            key={i}
+                            whileHover={{ scale: 1.05 }}
+                            onClick={() =>
+                                navigate("/login", {
+                                    state: { redirectTo: "/buyer/browsecars" }
+                                })
+                            }
+                            className="min-w-[300px] bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer"
                         >
-                            <img src={img} className="w-full h-40 object-cover" />
-                            <div className="p-3 text-center font-semibold">
-                                Premium Car
-                            </div>
-                        </div>
-                    ))}
+                            <img
+                                src={car.img}
+                                alt={car.name}
+                                className="h-48 w-full object-cover"
+                            />
 
-                </div>
-
-            </div>
-
-            {/* 🚗 BRAND SECTION */}
-            <div className="py-12 px-10">
-
-                <h2 className="text-3xl font-bold text-center mb-8">
-                    Popular Brands
-                </h2>
-
-                <div className="grid md:grid-cols-4 gap-6">
-
-                    {brands.map((brand, index) => (
-                        <div
-                            key={index}
-                            onClick={() => navigate("/login")}
-                            className="bg-white rounded-xl shadow hover:shadow-lg cursor-pointer overflow-hidden transform hover:scale-105 transition"
-                        >
-                            <img src={brand.img} className="w-full h-40 object-cover" />
                             <div className="p-4 text-center font-semibold">
-                                {brand.name}
+                                {car.name}
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
 
                 </div>
-
             </div>
 
-            {/* FEATURES */}
-            <div className="py-16 px-10">
-
-                <h2 className="text-3xl font-bold text-center mb-10">
-                    Why Choose Car Scout?
+            {/* 🚗 BRANDS SECTION */}
+            <div className="py-16 bg-white text-center">
+                <h2 className="text-3xl font-bold mb-10">
+                    Top Brands
                 </h2>
 
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="flex justify-center gap-12 flex-wrap items-center">
 
-                    <div className="bg-white p-6 rounded-xl shadow">
-                        <h3 className="text-xl font-semibold mb-2">🔍 Smart Search</h3>
-                        <p>Find cars easily with advanced filters.</p>
-                    </div>
-
-                    <div className="bg-white p-6 rounded-xl shadow">
-                        <h3 className="text-xl font-semibold mb-2">🚗 Test Drive</h3>
-                        <p>Book test drives instantly.</p>
-                    </div>
-
-                    <div className="bg-white p-6 rounded-xl shadow">
-                        <h3 className="text-xl font-semibold mb-2">💰 Best Deals</h3>
-                        <p>Negotiate directly with sellers.</p>
-                    </div>
+                    {brands.map((brand, i) => (
+                        <img
+                            key={i}
+                            src={brand.img}
+                            alt={brand.name}
+                            className="h-14 object-contain hover:scale-110 transition"
+                        />
+                    ))}
 
                 </div>
+            </div>
 
+            {/* ✨ FEATURES */}
+            <div className="py-20 px-6 md:px-10 bg-gray-50">
+                <h2 className="text-4xl text-center font-bold mb-12">
+                    Why CarScout?
+                </h2>
+
+                <div className="grid md:grid-cols-3 gap-10">
+                    <div className="bg-white p-8 rounded-2xl shadow">
+                        <h3 className="font-semibold text-xl mb-2">Smart Search</h3>
+                        <p>Find cars faster with filters</p>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-2xl shadow">
+                        <h3 className="font-semibold text-xl mb-2">Best Deals</h3>
+                        <p>Direct negotiation system</p>
+                    </div>
+
+                    <div className="bg-white p-8 rounded-2xl shadow">
+                        <h3 className="font-semibold text-xl mb-2">Trusted Sellers</h3>
+                        <p>Verified listings only</p>
+                    </div>
+                </div>
             </div>
 
             {/* 🔥 FOOTER */}
-            <footer className="bg-white mt-10 py-10 shadow-inner">
+            <footer className="bg-black text-white py-10 text-center">
+                <img src={logo} className="h-12 mx-auto mb-4" />
 
-                <div className="text-center mb-6">
-                    <img src={logo} className="h-12 mx-auto mb-2" />
-                    <p className="text-gray-500">
-                        © 2026 Car Scout. All rights reserved.
-                    </p>
-                </div>
-
-                {/* COMPANY LOGOS */}
-                <div className="flex justify-center gap-10 flex-wrap mt-6">
-
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Tata_logo.svg" className="h-10 grayscale hover:grayscale-0 transition" />
-
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg" className="h-10 grayscale hover:grayscale-0 transition" />
-
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Mahindra_Rise_Logo.svg" className="h-10 grayscale hover:grayscale-0 transition" />
-
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Suzuki_logo_2.svg" className="h-10 grayscale hover:grayscale-0 transition" />
-
-                </div>
-
+                <p className="text-gray-400">
+                    © 2026 CarScout. All rights reserved.
+                </p>
             </footer>
 
         </div>

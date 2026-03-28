@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-// Pages
+// ✅ FIXED: default import
 import { Home } from "../pages/HomePage";
+
 import Login from "../components/Login";
 import Signup from "../components/Signup";
 
@@ -17,38 +18,40 @@ import { ProtectedRoute } from "./ProtectedRoutes";
 import UserDashboard from "../pages/buyer/UserDashboard";
 import TestDrive from "../pages/buyer/TestDrive";
 import SavedCars from "../pages/buyer/SavedCars";
+import BuyerProfile from "../pages/buyer/ProfilePage";
+import BuyerNegotiations from "../pages/buyer/BuyerNegotiations";
 
+// ✅ FIXED: named import
+import BrowseCars from "../pages/buyer/BrowseCars";
+
+import CarDetailed from "../pages/buyer/Cardetails";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ManageUsers from "../pages/admin/ManageBuyers";
+import ManageSellers from "../pages/admin/ManageSeller";
 
 // Seller Pages
 import SellerDashboard from "../pages/seller/SellerDashboard";
 import AddCar from "../pages/seller/AddCar";
 import MyCars from "../pages/seller/MyCars";
-
-import BrowseCars from "../pages/buyer/BrowseCars";
-import CarDetailed from "../pages/buyer/Cardetails";
-
 import SellerTestDrives from "../pages/seller/SellerTestDrives";
-import BuyerProfile from "../pages/buyer/ProfilePage";
 import SellerOfferPage from "../pages/seller/SellerOfferpag";
-import BuyerNegotiations from "../pages/buyer/BuyerNegotiations";
+import SellerProfile from "../pages/seller/SellerProfile";
+
+// Auth
 import { Forgotpassword } from "../components/Forgotpassword";
 import ResetPassword from "../components/ResetPassword";
-import SellerProfile from "../pages/seller/SellerProfile";
-import ManageSellers from "../pages/admin/ManageSeller";
+
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
+
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <Signup /> },
   { path: "/forgotpassword", element: <Forgotpassword /> },
   { path: "/resetpassword/:token", element: <ResetPassword /> },
 
-  // public car details (optional)
-
-  // ✅ BUYER ROUTES (FIXED)
+  // ✅ BUYER
   {
     path: "/buyer",
     element: <ProtectedRoute role="buyer" />,
@@ -56,15 +59,11 @@ const router = createBrowserRouter([
       {
         element: <BuyerNavbar />,
         children: [
-          // 🔥 ADD THIS
           { path: "dashboard", element: <UserDashboard /> },
-
           { path: "browsecars", element: <BrowseCars /> },
           { path: "saved-cars", element: <SavedCars /> },
           { path: "profile", element: <BuyerProfile /> },
-          // 🔥 ADD THIS (MAIN ERROR FIX)
           { path: "car/:id", element: <CarDetailed /> },
-
           { path: "testdrive/:id", element: <TestDrive /> },
           { path: "negotiations", element: <BuyerNegotiations /> }
         ]
@@ -72,7 +71,7 @@ const router = createBrowserRouter([
     ]
   },
 
-  // ADMIN
+  // ✅ ADMIN
   {
     path: "/admin",
     element: <ProtectedRoute role="admin" />,
@@ -88,7 +87,7 @@ const router = createBrowserRouter([
     ]
   },
 
-  // SELLER
+  // ✅ SELLER
   {
     path: "/seller",
     element: <ProtectedRoute role="seller" />,
@@ -99,10 +98,9 @@ const router = createBrowserRouter([
           { path: "dashboard", element: <SellerDashboard /> },
           { path: "addcar", element: <AddCar /> },
           { path: "mycars", element: <MyCars /> },
-          { path: "testdrives", element: < SellerTestDrives s /> },
+          { path: "testdrives", element: <SellerTestDrives /> }, // ✅ FIXED
           { path: "offers", element: <SellerOfferPage /> },
           { path: "profile", element: <SellerProfile /> }
-
         ]
       }
     ]
