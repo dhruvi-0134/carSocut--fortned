@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-// ✅ FIXED: default import
-import { Home } from "../pages/HomePage";
+// ✅ correct
+import Home from "../pages/HomePage";
 
 import Login from "../components/Login";
 import Signup from "../components/Signup";
@@ -20,10 +20,7 @@ import TestDrive from "../pages/buyer/TestDrive";
 import SavedCars from "../pages/buyer/SavedCars";
 import BuyerProfile from "../pages/buyer/ProfilePage";
 import BuyerNegotiations from "../pages/buyer/BuyerNegotiations";
-
-// ✅ FIXED: named import
 import BrowseCars from "../pages/buyer/BrowseCars";
-
 import CarDetailed from "../pages/buyer/Cardetails";
 
 // Admin Pages
@@ -59,6 +56,7 @@ const router = createBrowserRouter([
       {
         element: <BuyerNavbar />,
         children: [
+          { index: true, element: <UserDashboard /> }, // ✅ ADD THIS
           { path: "dashboard", element: <UserDashboard /> },
           { path: "browsecars", element: <BrowseCars /> },
           { path: "saved-cars", element: <SavedCars /> },
@@ -79,6 +77,7 @@ const router = createBrowserRouter([
       {
         element: <AdminSidebar />,
         children: [
+          { index: true, element: <AdminDashboard /> }, // ✅ ADD THIS
           { path: "dashboard", element: <AdminDashboard /> },
           { path: "manage-users", element: <ManageUsers /> },
           { path: "manage-sellers", element: <ManageSellers /> }
@@ -95,10 +94,11 @@ const router = createBrowserRouter([
       {
         element: <SellerNavbar />,
         children: [
+          { index: true, element: <SellerDashboard /> }, // ✅ ADD THIS
           { path: "dashboard", element: <SellerDashboard /> },
           { path: "addcar", element: <AddCar /> },
           { path: "mycars", element: <MyCars /> },
-          { path: "testdrives", element: <SellerTestDrives /> }, // ✅ FIXED
+          { path: "testdrives", element: <SellerTestDrives /> },
           { path: "offers", element: <SellerOfferPage /> },
           { path: "profile", element: <SellerProfile /> }
         ]
