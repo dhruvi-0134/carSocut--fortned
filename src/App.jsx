@@ -6,7 +6,7 @@ import axios from 'axios'
 
 function App() {
   const [count, setCount] = useState(0)
-  axios.defaults.baseURL = "http://localhost:5000"
+  axios.defaults.baseURL = "https://carscout-backend-lq2p.onrender.com"
   return (
     <>
       <AppRouter />
