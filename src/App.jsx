@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import axios from 'axios'
 
 function App() {
+  return <h1>CarScout Working 🚗</h1>;
   const [count, setCount] = useState(0)
   axios.defaults.baseURL = "https://carscout-backend-lq2p.onrender.com"
   return (
